@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:task_app/data/model/task.dart';
+import 'package:task_app/data/model/task_fields.dart';
 
 class DatabaseProvider {
   static final DatabaseProvider instance = DatabaseProvider._init();
@@ -32,4 +34,64 @@ class DatabaseProvider {
   }
 
   // CRUD
+  //create
+  Future<Task> create(Task task) async {
+    final db = await instance.database;
+    final id = await db.insert("tasks", task.toMap());
+    return task.copyWith(id: id);
+  }
+
+  //readTask
+  Future<Task> readTask({required int id}) async {
+    final db = await instance.database;
+    final maps = await db.query("tasks",
+        columns: TaskFields.values,
+        where: '${TaskFields.values[0]} = ?',
+        whereArgs: [id]);
+    if (maps.isNotEmpty) {
+      return Task.fromMap(maps.first);
+    } else {
+      throw Exception("ID $id not found");
+    }
+  }
+
+  //readALl
+  Future<List<Task>> readAllTasks() async {
+    final db = await instance.database;
+    final orderBy = '${TaskFields.values[4]} ASC';
+    final result = await db.query("tasks", orderBy: orderBy);
+    return result.map((json) => Task.fromMap(json)).toList();
+  }
+
+  //update
+
+  Future<int> update({required Task task}) async {
+    final db = await instance.database;
+    return db.update("tasks", task.toMap(),
+        where: '${TaskFields.values[0]} = ?', whereArgs: [task.id]);
+  }
+
+  // delete
+  Future<int> delete({required int id}) async {
+    final db = await instance.database;
+    return db
+        .delete("tasks", where: '${TaskFields.values[0]} = ?', whereArgs: [id]);
+  }
+
+  //filter
+  Future<List<Task>> filter(
+      {required String filterKey, required dynamic filterValue}) async {
+    final db = await instance.database;
+    List<Map<String, dynamic>> tasks = await db.query("tasks",
+        where: '$filterKey = ?',
+        whereArgs: [filterValue],
+        orderBy: 'createdAt ASC');
+    return tasks.map((json) => Task.fromMap(json)).toList();
+  }
+
+  // close
+  Future close() async {
+    final db = await instance.database;
+    db.close();
+  }
 }
