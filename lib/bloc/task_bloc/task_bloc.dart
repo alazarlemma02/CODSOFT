@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:task_app/data/model/task.dart';
 import 'package:task_app/data/services/database_provider.dart';
 
@@ -18,6 +17,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskUpdateEvent>(_taskUpdateEvent);
     on<TaskCompleteEvent>(_taskCompleteEvent);
     on<TaskFilterEvent>(_taskFilterEvent);
+    on<TaskDeleteAllEvent>(_taskDeleteAllEvent);
+    on<TaskDeleteCompletedEvent>(_taskDeleteCompletedEvent);
+    on<TaskDeletePendingEvent>(_taskDeletePendingEvent);
+    on<ChangeIndexEvent>(_changeIndexEvent);
   }
 
   Future<void> _loaderInstance({required Emitter<TaskState> emit}) async {
@@ -28,7 +31,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   FutureOr<void> _taskInitEvent(
       TaskInitEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoadingState());
-    await Future.delayed(const Duration(seconds: 3));
     try {
       await _loaderInstance(emit: emit);
     } catch (e) {
@@ -38,15 +40,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   FutureOr<void> _taskAddEvent(
       TaskAddEvent event, Emitter<TaskState> emit) async {
-    emit(TaskAddingActionState());
-    // EasyLoading.show(status: 'loading...');
-    await Future.delayed(const Duration(seconds: 3));
-
+    emit(TaskAddingState());
     try {
       await DatabaseProvider.instance.create(event.task);
       await _loaderInstance(emit: emit);
       emit(TaskAddedActionState());
-      EasyLoading.showSuccess('Success!');
     } catch (e) {
       emit(TaskErrorState(message: e.toString()));
     }
@@ -69,6 +67,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     emit(TaskUpdatingState());
     try {
       await DatabaseProvider.instance.update(task: event.task);
+      await _loaderInstance(emit: emit);
       emit(TaskUpdatedActionState());
     } catch (e) {
       emit(TaskErrorState(message: e.toString()));
@@ -91,7 +90,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   FutureOr<void> _taskFilterEvent(
       TaskFilterEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoadingState());
-    await Future.delayed(const Duration(seconds: 3));
     try {
       List<Task> filteredTask = await DatabaseProvider.instance
           .filter(filterKey: event.filterKey, filterValue: event.status);
@@ -103,5 +101,45 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     } catch (e) {
       emit(TaskErrorState(message: e.toString()));
     }
+  }
+
+  FutureOr<void> _taskDeleteAllEvent(
+      TaskDeleteAllEvent event, Emitter<TaskState> emit) async {
+    emit(TaskLoadingState());
+    try {
+      await DatabaseProvider.instance.deleteAll();
+      await _loaderInstance(emit: emit);
+    } catch (e) {
+      emit(TaskErrorState(message: e.toString()));
+    }
+  }
+
+  FutureOr<void> _taskDeleteCompletedEvent(
+      TaskDeleteCompletedEvent event, Emitter<TaskState> emit) async {
+    emit(TaskDeletingState());
+    try {
+      await DatabaseProvider.instance.deleteCompleted();
+      await _loaderInstance(emit: emit);
+      emit(TaskDeletedActionState());
+    } catch (e) {
+      emit(TaskErrorState(message: e.toString()));
+    }
+  }
+
+  FutureOr<void> _taskDeletePendingEvent(
+      TaskDeletePendingEvent event, Emitter<TaskState> emit) async {
+    emit(TaskDeletingState());
+    try {
+      await DatabaseProvider.instance.deletePending();
+      await _loaderInstance(emit: emit);
+      TaskDeletedActionState();
+    } catch (e) {
+      emit(TaskErrorState(message: e.toString()));
+    }
+  }
+
+  FutureOr<void> _changeIndexEvent(
+      ChangeIndexEvent event, Emitter<TaskState> emit) {
+    emit(TaskInitial()..currentIndex = event.index);
   }
 }

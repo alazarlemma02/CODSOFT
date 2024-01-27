@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'task_bloc.dart';
 
 sealed class TaskState extends Equatable {
@@ -7,7 +8,9 @@ sealed class TaskState extends Equatable {
   List<Object> get props => [];
 }
 
-class TaskInitial extends TaskState {}
+class TaskInitial extends TaskState {
+  int currentIndex = 0;
+}
 
 class TaskActionState extends TaskState {}
 
@@ -22,7 +25,7 @@ class TaskLoadedState extends TaskState {
   List<Object> get props => [task];
 }
 
-class TaskAddingActionState extends TaskActionState {}
+class TaskAddingState extends TaskState {}
 
 class TaskAddedActionState extends TaskActionState {}
 
