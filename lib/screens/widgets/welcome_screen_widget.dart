@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_app/config/theme.dart';
 import 'package:task_app/screens/views/navigation_screen.dart';
 
 class WelcomeScreenWidget extends StatelessWidget {
@@ -27,8 +28,8 @@ class WelcomeScreenWidget extends StatelessWidget {
       children: [
         Container(
           margin:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
-          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
           height: 400,
           width: double.infinity,
           child: Center(
@@ -51,12 +52,14 @@ class WelcomeScreenWidget extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 24),
+                    style: TextStyle(
+                        color: lightColorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24),
                   ),
                   Text(
                     subtitle,
-                    style: const TextStyle(),
+                    style: TextStyle(color: lightColorScheme.secondary),
                   ),
                 ],
               ),
@@ -65,7 +68,7 @@ class WelcomeScreenWidget extends StatelessWidget {
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
+            backgroundColor: lightColorScheme.primary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),

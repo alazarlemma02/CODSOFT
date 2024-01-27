@@ -16,9 +16,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Image.asset("assets/images/welcome_background.png"),
+        Image.asset("assets/images/welcome_background.png",
+            fit: BoxFit.cover,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width),
         Scaffold(
-          backgroundColor: Colors.transparent,
           body: BlocBuilder<WelcomeBloc, WelcomeInitial>(
             builder: (context, state) {
               return Stack(
