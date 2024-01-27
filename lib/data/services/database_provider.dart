@@ -22,15 +22,17 @@ class DatabaseProvider {
 
   Future _createDB(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE tasks(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT  NOT NULL,
-        isCompleted INTEGER NOT NULL,
-        createdAt TEXT NOT NULL,
-        completedAt TEXT
-      )
-''');
+    CREATE TABLE tasks(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT  NOT NULL,
+      isCompleted INTEGER NOT NULL,
+      createdAt TEXT NOT NULL,
+      completedAt TEXT,
+      timeRangeStart INTEGER,
+      timeRangeEnd INTEGER
+    )
+  ''');
   }
 
   // CRUD
@@ -87,6 +89,24 @@ class DatabaseProvider {
         whereArgs: [filterValue],
         orderBy: 'createdAt ASC');
     return tasks.map((json) => Task.fromMap(json)).toList();
+  }
+
+  //delete all
+  Future<int> deleteAll() async {
+    final db = await instance.database;
+    return db.delete("tasks");
+  }
+
+  // delete completed
+  Future<int> deleteCompleted() async {
+    final db = await instance.database;
+    return db.delete("tasks", where: 'isCompleted = ?', whereArgs: [1]);
+  }
+
+  // delete pending
+  Future<int> deletePending() async {
+    final db = await instance.database;
+    return db.delete("tasks", where: 'isCompleted = ?', whereArgs: [0]);
   }
 
   // close
