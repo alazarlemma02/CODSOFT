@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_app/bloc/task_bloc/task_bloc.dart';
 import 'package:task_app/config/field_validator.dart';
+import 'package:task_app/config/theme.dart';
 import 'package:task_app/data/model/task.dart';
 
 class TaskAddScreen extends StatefulWidget {
@@ -13,9 +14,10 @@ class TaskAddScreen extends StatefulWidget {
 
 class TaskAddScreenState extends State<TaskAddScreen> {
   final TextEditingController _titleController = TextEditingController();
-DateTime _createdAt = DateTime.now();
-TimeOfDay _startTime = TimeOfDay.now();
-TimeOfDay _endTime = TimeOfDay.fromDateTime(DateTime.now().add(const Duration(hours: 2)));
+  DateTime _createdAt = DateTime.now();
+  TimeOfDay _startTime = TimeOfDay.now();
+  TimeOfDay _endTime =
+      TimeOfDay.fromDateTime(DateTime.now().add(const Duration(hours: 2)));
 
   final TextEditingController _descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -86,38 +88,40 @@ TimeOfDay _endTime = TimeOfDay.fromDateTime(DateTime.now().add(const Duration(ho
                       Validator.validateTitle(title: _titleController.text),
                   controller: _titleController,
                   decoration: InputDecoration(
-                      hintText: "task name",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200]),
+                    hintText: "task name",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
                 ),
                 const Text(
                   "Date & Time",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[200],
-                    border: Border.all(
-                      color: Colors.grey,
+                GestureDetector(
+                  onTap: _showDatePicker,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: lightColorScheme.outline,
+                          style: BorderStyle.solid),
                     ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${_createdAt.toLocal()}".split(' ')[0],
-                      ),
-                      IconButton(
-                        onPressed: _showDatePicker,
-                        icon: const Icon(Icons.date_range),
-                      ),
-                    ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${_createdAt.toLocal()}".split(' ')[0],
+                        ),
+                        IconButton(
+                          onPressed: _showDatePicker,
+                          icon: const Icon(Icons.date_range),
+                          color: darkColorScheme.primary,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Row(
@@ -135,30 +139,33 @@ TimeOfDay _endTime = TimeOfDay.fromDateTime(DateTime.now().add(const Duration(ho
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.08,
-                              padding:
-                                  const EdgeInsets.only(left: 20, right: 15),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey[200],
-                                border: Border.all(
-                                  color: Colors.grey,
+                            GestureDetector(
+                              onTap: _showStartTimePicker,
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.08,
+                                padding:
+                                    const EdgeInsets.only(left: 20, right: 15),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    _startTime.format(context).toString(),
-                                  ),
-                                  IconButton(
-                                    onPressed: _showStartTimePicker,
-                                    icon: const Icon(Icons.arrow_drop_down,
-                                        size: 40),
-                                  ),
-                                ],
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      _startTime.format(context).toString(),
+                                    ),
+                                    IconButton(
+                                      onPressed: _showStartTimePicker,
+                                      icon: const Icon(Icons.arrow_drop_down,
+                                          size: 40),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ]),
@@ -175,30 +182,33 @@ TimeOfDay _endTime = TimeOfDay.fromDateTime(DateTime.now().add(const Duration(ho
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.08,
-                              padding:
-                                  const EdgeInsets.only(left: 15, right: 15),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey[200],
-                                border: Border.all(
-                                  color: Colors.grey,
+                            GestureDetector(
+                              onTap: _showEndTimePicker,
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.08,
+                                padding:
+                                    const EdgeInsets.only(left: 15, right: 15),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    _endTime.format(context).toString(),
-                                  ),
-                                  IconButton(
-                                    onPressed: _showEndTimePicker,
-                                    icon: const Icon(Icons.arrow_drop_down,
-                                        size: 40),
-                                  ),
-                                ],
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      _endTime.format(context).toString(),
+                                    ),
+                                    IconButton(
+                                      onPressed: _showEndTimePicker,
+                                      icon: const Icon(Icons.arrow_drop_down,
+                                          size: 40),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ]),
@@ -215,16 +225,15 @@ TimeOfDay _endTime = TimeOfDay.fromDateTime(DateTime.now().add(const Duration(ho
                   maxLines: 3,
                   controller: _descriptionController,
                   decoration: InputDecoration(
-                      hintText: "task description",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200]),
+                    hintText: "task description",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: lightColorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -233,6 +242,7 @@ TimeOfDay _endTime = TimeOfDay.fromDateTime(DateTime.now().add(const Duration(ho
                   ),
                   onPressed: () {
                     _addTodo(context);
+                    Navigator.pop(context, true);
                   },
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,
@@ -256,20 +266,17 @@ TimeOfDay _endTime = TimeOfDay.fromDateTime(DateTime.now().add(const Duration(ho
     );
   }
 
-void _addTodo(BuildContext context) {
-  if (_formKey.currentState!.validate()) {
-    BlocProvider.of<TaskBloc>(context).add(TaskAddEvent(
-      task: Task(
-        title: _titleController.text,
-        description: _descriptionController.text,
-        isCompleted: false,
-        createdAt: _createdAt,
-        completedAt: DateTime.now(),
-        startTime: _startTime,
-        endTime: _endTime
-      )
-    ));
-    Navigator.pop(context);
+  void _addTodo(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      BlocProvider.of<TaskBloc>(context).add(TaskAddEvent(
+          task: Task(
+              title: _titleController.text,
+              description: _descriptionController.text,
+              isCompleted: false,
+              createdAt: _createdAt,
+              completedAt: DateTime.now(),
+              startTime: _startTime,
+              endTime: _endTime)));
+    }
   }
-}
 }
