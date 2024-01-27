@@ -5,7 +5,8 @@ class TaskFields {
     'description',
     'isCompleted',
     'createdAt',
-    'dueAt',
-    'completedAt'
+    'completedAt',
+    'startTime',
+    'endTime'
   ];
 }
